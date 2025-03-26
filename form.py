@@ -31,8 +31,8 @@ st.set_page_config(
 )
 
 # Try configuring Google GenerativeAI
-PI_KEY = "AIzaSyBQV-A6fIx2TyHnZeEagjPRU_1pSVbXLKM"
-genai.configure(api_key="AIzaSyBQV-A6fIx2TyHnZeEagjPRU_1pSVbXLKM")
+PI_KEY = "********************************"
+genai.configure(api_key="******************************")
 # Create a GenerativeAI model (replace 'gemini-1.5-pro-latest' if desired)
 model = genai.GenerativeModel('gemini-1.5-pro-latest')
 
