@@ -30,7 +30,7 @@ st.set_page_config(
 )
 
 # Configure Google GenerativeAI com variável de ambiente
-PI_KEY = os.environ.get("AIzaSyBQV-A6fIx2TyHnZeEagjPRU_1pSVbXLKM")
+PI_KEY = os.environ.get("GOOGLE_GEMINI_API_KEY")
 if PI_KEY:
     genai.configure(api_key=PI_KEY)
     model = genai.GenerativeModel('gemini-1.5-pro-latest')
