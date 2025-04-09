@@ -8,7 +8,7 @@ from function import obter_valor_criticidade, obter_valor_equipe, obter_valor_di
 import google.generativeai as genai
 nltk.download('punkt')
 import re
-from fpdf import FPDF  # Importe a biblioteca fpdf2
+from fpdf2 import FPDF  # Importe a biblioteca fpdf2
 
 st.set_page_config(
     page_title="MICA - Gerador de Metodologias Híbridas",
@@ -53,6 +53,8 @@ def create_pdf(title, content):
     pdf.add_page()
     pdf.set_font("Arial", size=12)
     try:
+        st.write(f"Título dentro de create_pdf: {title}") # Adicionado para debug
+        st.write(f"Conteúdo dentro de create_pdf:\n{content}") # Adicionado para debug
         pdf.cell(200, 10, txt=title, ln=1, align="C")
         pdf.multi_cell(0, 10, txt=content)
         return pdf.output(dest="S")
@@ -61,7 +63,7 @@ def create_pdf(title, content):
         return None
 
 def main():
-    tab1, tab2, tab3 = st.tabs(["Home", "Criar plano de gerenciamento", "Galeria"])
+    tab1, tab2 = st.tabs(["Home", "Criar plano de gerenciamento"])
 
     with tab1:
         st.subheader("""Cansado de escolher entre metodologias ágeis e tradicionais?""")
@@ -134,66 +136,14 @@ def main():
             st.session_state.resultado_gerado = generated_text
             st.write(f"Conteúdo gerado pela IA:\n{st.session_state.resultado_gerado}") # Adicionado para debug
 
-        # Salvar as informações em um card expansível
+        # Salvar as informações em um card expansível (mantido para depuração, mas sem botão de download)
         titulo = st.text_input("Titulo")
-        col_save, col_download = st.columns([1, 1])
-        with col_save:
-            if st.button("Salvar"):
-                if "informacoes_salvas" not in st.session_state:
-                    st.session_state.informacoes_salvas = []
-                st.session_state.informacoes_salvas.append({"titulo": titulo, "conteudo": st.session_state.resultado_gerado})
-        with col_download:
-            if "resultado_gerado" in st.session_state and st.session_state.resultado_gerado:
-                st.write(f"Título para PDF (Criar Plano): {titulo}") # Adicionado para debug
-                st.write(f"Conteúdo para PDF (Criar Plano):\n{st.session_state.resultado_gerado}") # Adicionado para debug
-                pdf_bytes = create_pdf(titulo if titulo else "Plano de Gerenciamento", st.session_state.resultado_gerado)
-                st.download_button(
-                    label="Baixar PDF",
-                    data=pdf_bytes,
-                    file_name=f"{titulo if titulo else 'plano_gerenciamento'}.pdf",
-                    mime="application/pdf",
-                )
-            else:
-                st.caption("Gere o plano de gerenciamento para habilitar o download.")
-
-    with tab3:
-        st.header("Informações Salvas")
-        if "informacoes_salvas" in st.session_state:
+        st.button("Salvar") # Mantido para simular o salvamento, mas sem ação de download imediata
+        if "informacoes_salvas" in st.session_state and st.session_state.informacoes_salvas:
+            st.subheader("Informações Salvas:")
             for card in st.session_state.informacoes_salvas:
                 with st.expander(card["titulo"]):
                     st.markdown(card["conteudo"])
-
-                    st.subheader("Progresso das Fases")
-
-                    fases = ["Iniciação", "Planejamento", "Execução", "Monitoramento e Controle", "Encerramento"]
-
-                    if "fases_concluidas" not in st.session_state:
-                        st.session_state.fases_concluidas = {fase: False for fase in fases}
-
-                    for fase in fases:
-                        st.session_state.fases_concluidas[fase] = st.checkbox(fase, value=st.session_state.fases_concluidas[fase])
-
-                    total_fases = len(fases)
-                    fases_concluidas = sum(1 for concluida in st.session_state.fases_concluidas.values() if concluida)
-                    percentual_concluido = (fases_concluidas / total_fases) * 100 if total_fases > 0 else 0
-
-                    st.progress(percentual_concluido / 100)
-                    st.write(f"{percentual_concluido:.2f}% concluído")
-
-                    # Adicionar o botão de download para cada card salvo
-                    st.write(f"Título para PDF (Galeria): {card['titulo']}") # Adicionado para debug
-                    st.write(f"Conteúdo para PDF (Galeria):\n{card['conteudo']}") # Adicionado para debug
-                    pdf_bytes = create_pdf(card["titulo"], card["conteudo"])
-                    st.download_button(
-                        label=f"Baixar {card['titulo']}.pdf",
-                        data=pdf_bytes,
-                        file_name=f"{card['titulo']}.pdf",
-                        mime="application/pdf",
-                        key=f"download_galeria_{card['titulo']}"  # Adicione uma chave única
-                    )
-
-        else:
-            st.info("Nenhuma informação foi salva.")
 
 if __name__ == "__main__":
     main()
