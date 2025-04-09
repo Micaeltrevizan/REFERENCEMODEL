@@ -3,6 +3,4 @@ nltk
 pandas
 fpdf
 google-generativeai
-logging
-os
-re
+
