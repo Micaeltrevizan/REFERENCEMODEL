@@ -138,12 +138,26 @@ def main():
 
         # Salvar as informações em um card expansível (mantido para depuração, mas sem botão de download)
         titulo = st.text_input("Titulo")
-        st.button("Salvar") # Mantido para simular o salvamento, mas sem ação de download imediata
+
         if "informacoes_salvas" in st.session_state and st.session_state.informacoes_salvas:
             st.subheader("Informações Salvas:")
             for card in st.session_state.informacoes_salvas:
                 with st.expander(card["titulo"]):
                     st.markdown(card["conteudo"])
+
+        # Adicionar o botão de download diretamente aqui
+        if "resultado_gerado" in st.session_state and st.session_state.resultado_gerado:
+            st.write(f"Título para PDF (Criar Plano): {titulo}") # Adicionado para debug
+            st.write(f"Conteúdo para PDF (Criar Plano):\n{st.session_state.resultado_gerado}") # Adicionado para debug
+            pdf_bytes = create_pdf(titulo if titulo else "Plano de Gerenciamento", st.session_state.resultado_gerado)
+            st.download_button(
+                label="Baixar PDF",
+                data=pdf_bytes,
+                file_name=f"{titulo if titulo else 'plano_gerenciamento'}.pdf",
+                mime="application/pdf",
+            )
+        else:
+            st.caption("Gere o plano de gerenciamento para habilitar o download.")
 
 if __name__ == "__main__":
     main()
