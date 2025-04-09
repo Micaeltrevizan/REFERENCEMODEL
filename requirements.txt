@@ -4,6 +4,5 @@ pandas
 fpdf
 google-generativeai
 logging
-base64
 os
 re
