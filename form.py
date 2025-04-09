@@ -8,7 +8,7 @@ from function import obter_valor_criticidade, obter_valor_equipe, obter_valor_di
 import google.generativeai as genai
 nltk.download('punkt')
 import re
-from fpdf2 import FPDF  # Importe a biblioteca fpdf2
+from fpdf import FPDF  # Importe a biblioteca fpdf2
 
 st.set_page_config(
     page_title="MICA - Gerador de Metodologias Híbridas",
