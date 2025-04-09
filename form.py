@@ -8,7 +8,7 @@ from function import obter_valor_criticidade, obter_valor_equipe, obter_valor_di
 import google.generativeai as genai
 nltk.download('punkt')
 import re
-from fpdf import FPDF  # Importe a biblioteca fpdf2
+from fpdf2 import FPDF  # Importe a biblioteca fpdf2
 
 st.set_page_config(
     page_title="MICA - Gerador de Metodologias Híbridas",
@@ -52,12 +52,16 @@ def create_pdf(title, content):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, txt=title, ln=1, align="C")
-    pdf.multi_cell(0, 10, txt=content)
-    return pdf.output(dest="S")
+    try:
+        pdf.cell(200, 10, txt=title, ln=1, align="C")
+        pdf.multi_cell(0, 10, txt=content)
+        return pdf.output(dest="S")
+    except Exception as e:
+        st.error(f"Erro ao criar PDF: {e}")
+        return None
 
 def download_card_info(title, content):
-    pdf_bytes = bytes(create_pdf(title, content))
+    pdf_bytes = create_pdf(title, content)
     b64 = base64.b64encode(pdf_bytes).decode()
     href = f'<a href="data:application/pdf;base64,{b64}" download="{title}.pdf">Baixar PDF</a>'
     return href
@@ -145,7 +149,7 @@ def main():
                 st.session_state.informacoes_salvas.append({"titulo": titulo, "conteudo": st.session_state.resultado_gerado})
         with col_download:
             if "resultado_gerado" in st.session_state and st.session_state.resultado_gerado:
-                pdf_bytes = bytes(create_pdf(titulo if titulo else "Plano de Gerenciamento", st.session_state.resultado_gerado))
+                pdf_bytes = create_pdf(titulo if titulo else "Plano de Gerenciamento", st.session_state.resultado_gerado)
                 st.download_button(
                     label="Baixar PDF",
                     data=pdf_bytes,
@@ -180,7 +184,7 @@ def main():
                     st.write(f"{percentual_concluido:.2f}% concluído")
 
                     # Adicionar o botão de download para cada card salvo
-                    pdf_bytes = bytes(create_pdf(card["titulo"], card["conteudo"]))
+                    pdf_bytes = create_pdf(card["titulo"], card["conteudo"])
                     b64 = base64.b64encode(pdf_bytes).decode()
                     href = f'<a href="data:application/pdf;base64,{b64}" download="{card["titulo"]}.pdf">Baixar PDF</a>'
                     st.markdown(href, unsafe_allow_html=True)
