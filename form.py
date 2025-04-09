@@ -8,7 +8,7 @@ from function import obter_valor_criticidade, obter_valor_equipe, obter_valor_di
 import google.generativeai as genai
 nltk.download('punkt')
 import re
-from fpdf import FPDF  # Importe a biblioteca fpdf2
+from fpdf2 import FPDF  # Importe a biblioteca fpdf2
 
 st.set_page_config(
     page_title="MICA - Gerador de Metodologias Híbridas",
@@ -59,12 +59,6 @@ def create_pdf(title, content):
     except Exception as e:
         st.error(f"Erro ao criar PDF: {e}")
         return None
-
-def download_card_info(title, content):
-    pdf_bytes = create_pdf(title, content)
-    b64 = base64.b64encode(pdf_bytes).decode()
-    href = f'<a href="data:application/pdf;base64,{b64}" download="{title}.pdf">Baixar PDF</a>'
-    return href
 
 def main():
     tab1, tab2, tab3 = st.tabs(["Home", "Criar plano de gerenciamento", "Galeria"])
@@ -185,9 +179,13 @@ def main():
 
                     # Adicionar o botão de download para cada card salvo
                     pdf_bytes = create_pdf(card["titulo"], card["conteudo"])
-                    b64 = base64.b64encode(pdf_bytes).decode()
-                    href = f'<a href="data:application/pdf;base64,{b64}" download="{card["titulo"]}.pdf">Baixar PDF</a>'
-                    st.markdown(href, unsafe_allow_html=True)
+                    st.download_button(
+                        label=f"Baixar {card['titulo']}.pdf",
+                        data=pdf_bytes,
+                        file_name=f"{card['titulo']}.pdf",
+                        mime="application/pdf",
+                        key=f"download_galeria_{card['titulo']}"  # Adicione uma chave única
+                    )
 
         else:
             st.info("Nenhuma informação foi salva.")
