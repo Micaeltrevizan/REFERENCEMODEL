@@ -1,3 +1,49 @@
+def obter_metodologia_por_fase(criticidade_nivel, equipe_nivel, dinamismo_nivel, cultura_nivel, tamanho_nivel):
+    """
+    Determina as metodologias recomendadas para cada fase do projeto
+    baseado nos níveis dos fatores de escolha.
+    """
+    metodologias_por_fase = {
+        "iniciação": [],
+        "planejamento": [],
+        "execução": [],
+        "monitoramento": [],
+        "encerramento": [],
+    }
+
+    # Obter as metodologias recomendadas por fator
+    _, criticidade_metodologia = obter_valor_criticidade(criticidade_nivel)
+    _, equipe_metodologia = obter_valor_equipe(equipe_nivel)
+    _, dinamismo_metodologia = obter_valor_dinamismo(dinamismo_nivel)
+    _, cultura_metodologia = obter_valor_cultura(cultura_nivel)
+    _, tamanho_metodologia = obter_valor_tamanho(tamanho_nivel)
+
+    # Mapear as metodologias para as fases correspondentes (baseado na sua tabela)
+    metodologia_fase_map = {
+        "Waterfall": ["iniciação", "planejamento", "execução", "encerramento"],
+        "PRINCE2": ["iniciação", "planejamento", "encerramento"],
+        "PMBOK": ["iniciação", "planejamento", "monitoramento", "encerramento"],
+        "Scrum": ["execução", "monitoramento"],
+        "XP": ["execução", "monitoramento"],
+        "Kanban": ["execução"],
+    }
+
+    recomendacoes = [
+        criticidade_metodologia,
+        equipe_metodologia,
+        dinamismo_metodologia,
+        cultura_metodologia,
+        tamanho_metodologia,
+    ]
+
+    for metodologia in recomendacoes:
+        if metodologia in metodologia_fase_map:
+            for fase in metodologia_fase_map[metodologia]:
+                if metodologia not in metodologias_por_fase[fase]:
+                    metodologias_por_fase[fase].append(metodologia)
+
+    return metodologias_por_fase
+
 def obter_valor_criticidade(nivel):
   # Tabela de correspondência: nível -> valor
   tabela_criticidade = {
@@ -12,7 +58,7 @@ def obter_valor_criticidade(nivel):
     3: "PRINCE2"
   }
   # Verifica se o nível informado é válido
-  if 1 <= nivel <= 5:
+  if 1 <= nivel <= 3: # Ajustado para o range das tabelas
     return tabela_criticidade[nivel],tabela_criticidade_metodologias[nivel]
   else:
     return None
@@ -30,7 +76,7 @@ def obter_valor_equipe(nivel):
     3: "XP"
   }
   # Verifica se o nível informado é válido
-  if 1 <= nivel <= 5:
+  if 1 <= nivel <= 3: # Ajustado para o range das tabelas
     return tabela_equipe[nivel], tabela_equipe_metodologias[nivel]
   else:
     return None
@@ -48,7 +94,7 @@ def obter_valor_dinamismo(nivel):
     3: "XP"
   }
   # Verifica se o nível informado é válido
-  if 1 <= nivel <= 5:
+  if 1 <= nivel <= 3: # Ajustado para o range das tabelas
     return tabela_dinamismo[nivel], tabela_dinamismo_metodologias[nivel]
   else:
     return None
@@ -66,7 +112,7 @@ def obter_valor_cultura(nivel):
     3: "XP"
   }
   # Verifica se o nível informado é válido
-  if 1 <= nivel <= 5:
+  if 1 <= nivel <= 3: # Ajustado para o range das tabelas
     return tabela_cultura[nivel], tabela_cultura_metodologias[nivel]
   else:
     return None
@@ -84,8 +130,7 @@ def obter_valor_tamanho(nivel):
     3: "PMBOK"
   }
   # Verifica se o nível informado é válido
-  if 1 <= nivel <= 5:
+  if 1 <= nivel <= 3: # Ajustado para o range das tabelas
     return tabela_tamanho[nivel], tabela_tamanho_metodologias[nivel]
   else:
     return None
-
