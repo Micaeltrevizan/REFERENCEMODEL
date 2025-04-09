@@ -132,6 +132,7 @@ def main():
             st.write("**Resposta:**")
             st.markdown(generated_text)
             st.session_state.resultado_gerado = generated_text
+            st.write(f"Conteúdo gerado pela IA:\n{st.session_state.resultado_gerado}") # Adicionado para debug
 
         # Salvar as informações em um card expansível
         titulo = st.text_input("Titulo")
@@ -143,6 +144,8 @@ def main():
                 st.session_state.informacoes_salvas.append({"titulo": titulo, "conteudo": st.session_state.resultado_gerado})
         with col_download:
             if "resultado_gerado" in st.session_state and st.session_state.resultado_gerado:
+                st.write(f"Título para PDF (Criar Plano): {titulo}") # Adicionado para debug
+                st.write(f"Conteúdo para PDF (Criar Plano):\n{st.session_state.resultado_gerado}") # Adicionado para debug
                 pdf_bytes = create_pdf(titulo if titulo else "Plano de Gerenciamento", st.session_state.resultado_gerado)
                 st.download_button(
                     label="Baixar PDF",
@@ -178,6 +181,8 @@ def main():
                     st.write(f"{percentual_concluido:.2f}% concluído")
 
                     # Adicionar o botão de download para cada card salvo
+                    st.write(f"Título para PDF (Galeria): {card['titulo']}") # Adicionado para debug
+                    st.write(f"Conteúdo para PDF (Galeria):\n{card['conteudo']}") # Adicionado para debug
                     pdf_bytes = create_pdf(card["titulo"], card["conteudo"])
                     st.download_button(
                         label=f"Baixar {card['titulo']}.pdf",
